@@ -1,7 +1,7 @@
 {
   "name": "claude-ops",
-  "description": "Agent infrastructure guide for Claude Code. Classify knowledge into rules, skills, agents, hooks, memory, and CLAUDE.md. Audit infrastructure health. Create artifacts with best-practice templates.",
-  "version": "1.0.0",
+  "description": "Agent infrastructure guide for Claude Code. Routes knowledge to the right artifact AND scope — git-tracked team knowledge by default, personal memory as the exception. Keeps files small with topic-owned, on-demand rules that split before they become god-files. Audits health and emits concrete actions; ships a personal-memory guard hook.",
+  "version": "2.0.0",
   "author": {
     "name": "Anton Haskevych"
   }

@@ -1,32 +1,69 @@
-# Creating Memory Entries
+# Scope: Team (Committed) vs Personal (Memory)
 
-Auto-memory persists in `~/.claude/projects/.../memory/`. Use for cross-session context that is NOT derivable from code or git.
+The default home for knowledge is the **git-tracked repo**, where the whole team's agent harness
+compounds over time. Personal machine-local memory (`~/.claude/projects/.../memory/`,
+`CLAUDE.local.md`) is the rare exception — invisible to teammates, never committed. Reach for it
+last, not first.
 
-## When to Use Memory
+## The Tribe Test
 
-Memory is for knowledge that:
-- Is not in the codebase (can't be found by reading files)
-- Is not a project convention (those go in CLAUDE.md or rules)
-- Is specific to the user, their feedback, the project's direction, or external resources
+> **"Would a new teammate's agent session benefit from this?"** → Yes = team knowledge → commit it.
 
-## Memory Types
+Apply it to every fact before considering memory.
 
-| Type | When to save | Example |
-|------|-------------|---------|
-| `user` | User's role, preferences, expertise | "User is a data scientist focused on logging" |
-| `feedback` | User corrects or confirms approach | "Don't mock the database — prior incident with prod migration" |
-| `project` | Goals, deadlines, strategic decisions | "Merge freeze begins 2026-03-05 for mobile release" |
-| `reference` | Pointers to external systems | "Pipeline bugs tracked in Linear project INGEST" |
+## Default committed; personal only by whitelist
 
-## What Memory is NOT For
+Send a fact to PERSONAL scope **only** if it matches one of these:
 
-- Code patterns, conventions, architecture → CLAUDE.md or rules
+1. local credentials, secrets, or sandbox URLs
+2. single-machine tooling/workflow ergonomics (your shell aliases, your editor)
+3. an individual preference that contradicts **no** team convention
+4. ephemeral personal scratch
+
+Everything else is team knowledge → route it to a committed artifact.
+
+## Where team knowledge actually goes (usually NOT memory)
+
+The four "memory types" that legacy setups dumped into per-user auto-memory almost always belong
+in the committed repo instead:
+
+| Legacy "memory type" | Tribe Test | Real home |
+|---|---|---|
+| **user** — role / preferences / expertise | usually personal | personal memory — the one genuinely common personal case (unless it's a *team* role fact) |
+| **feedback** — "corrected/confirmed my approach" | usually **TEAM** | a path-scoped rule, or a **hook** if mechanizable. *"Don't mock the DB — prior prod incident"* is team-safety canon, **not** a personal note. |
+| **project** — goals / deadlines / decisions | **TEAM** | `docs/decisions/<n>-<slug>.md` for rationale; root or `<dir>/CLAUDE.md` for standing facts |
+| **reference** — where to find external info | **TEAM** if the system is shared | committed `CLAUDE.md` or a rule (e.g. "pipeline bugs → Linear project INGEST") |
+
+Only the genuinely-personal residue stays in machine-local memory.
+
+## Ambiguity → ask, with Team as the default
+
+If a fact could honestly be either, ask `[Team (committed) — default]` vs
+`[Personal (this machine only)]`, each with its one-line consequence. Clear cases decide with no prompt.
+
+Before the first write into a committed file, preview the target and scan the index/`MEMORY.md`
+for a near-duplicate — never silently commit a secret or a personal note into a shared repo.
+
+## Git-repo vs non-git directory
+
+Detect first: `git rev-parse --show-toplevel`.
+
+- **In a git repo** → committed-default applies; team artifacts resolve under the repo root;
+  personal exceptions go to `CLAUDE.local.md` (gitignored) or auto-memory.
+- **In a non-git directory** (e.g. `~/IdeaProjects`) → there is no committed layer, so do **not**
+  silently write "team" knowledge to an untracked place. Ask: **global (`~/.claude/…`) vs
+  project-local**. (Honors the standing rule that non-git dirs prompt for scope.)
+
+## If memory really is the answer
+
+Auto-memory persists at `~/.claude/projects/.../memory/` with a `MEMORY.md` index (one line per
+entry, <150 chars, max 200 lines). Use it only for the personal residue above, and only for
+knowledge NOT derivable from code, commands, or git.
+
+## What memory is NOT for
+
+- Code patterns, conventions, architecture → committed `CLAUDE.md` or a rule
 - File paths, project structure → Glob/Grep finds them
-- Git history, recent changes → `git log`/`git blame`
-- Debugging solutions → the fix is in the code
-- Anything documented in CLAUDE.md files → don't duplicate
-
-## Structure
-
-Each memory is a markdown file with frontmatter (`name`, `description`, `type`) plus content.
-`MEMORY.md` is the index — one line per entry, under 150 chars each, max 200 lines.
+- Git history, recent changes → `git log` / `git blame`
+- Debugging solutions → the fix lives in the code or a topic rule
+- Anything already in a committed file → don't duplicate
