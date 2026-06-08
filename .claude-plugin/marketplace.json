@@ -1,0 +1,14 @@
+{
+  "name": "claude-ops-marketplace",
+  "owner": {
+    "name": "Anton Haskevych"
+  },
+  "plugins": [
+    {
+      "name": "claude-ops",
+      "source": "./",
+      "description": "Agent infrastructure guide for Claude Code — routes knowledge to the right artifact and scope (git-tracked team by default, personal memory as the exception), keeps files small with topic-owned on-demand rules, audits health, and ships a personal-memory guard hook.",
+      "version": "2.0.0"
+    }
+  ]
+}
